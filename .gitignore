@@ -1,0 +1,12 @@
+# Common
+node_modules/
+yarn.lock
+
+# Compilations
+dist/
+
+# Logs
+*.log
+
+# Security
+.env

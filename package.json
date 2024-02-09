@@ -1,0 +1,31 @@
+{
+  "name": "koa-knex",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "start:dev": "nodemon --exec ts-node src/server.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@koa/bodyparser": "^5.0.0",
+    "@koa/router": "^12.0.1",
+    "dotenv": "^16.4.1",
+    "koa": "^2.15.0",
+    "koa-helmet": "^7.0.2",
+    "koa-logger": "^3.2.1"
+  },
+  "devDependencies": {
+    "@types/koa": "^2.14.0",
+    "@types/koa-logger": "^3.1.5",
+    "@types/koa__router": "^12.0.4",
+    "@types/node": "^20.11.17",
+    "nodemon": "^3.0.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+}
