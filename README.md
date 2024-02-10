@@ -1,5 +1,7 @@
 # WIP
 
+## The goal of this project is to construct a server using an Object-Oriented Programming (OOP) approach, adhering to clean code best practices.  
+
 ## This project utilizes the following technology stack:
 - Node.js
 - Koa.js
@@ -8,8 +10,7 @@
 - TBD | Knex
 - TBD | Databases: Postgres, MongoDB
 
-## The aim of this project is to construct a server using an Object-Oriented Programming (OOP) approach, adhering to clean code best practices.  
-I developed a custom **Core Module** without any dependencies, which includes:
+## I developed a custom **Core Module** without any dependencies, which includes:
 - An **IoC Container** for Dependency Injection.
 - An Application class to manage the **Application Lifecycle** (registration, bootstrapping).
 - The server lifecycle is designed to integrate new components with minimal effort.
