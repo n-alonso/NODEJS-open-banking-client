@@ -6,4 +6,4 @@ export {
     bodyParser,
     koaHelmet,
     koaLogger
-}
+};

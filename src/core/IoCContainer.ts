@@ -13,7 +13,7 @@ export class IoCContainer {
     private constructor() {
         this.middlewares = [];
         this.routes = [];
-    };
+    }
 
     public static getInstance(): IoCContainer {
         if (!IoCContainer.instance) {
