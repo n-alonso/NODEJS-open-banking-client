@@ -4,8 +4,9 @@
 - Node.js
 - Koa.js
 - TypeScript
-- Knex
-- Jest
+- TBD | Jest
+- TBD | Knex
+- TBD | Databases: Postgres, MongoDB
 
 ## The aim of this project is to construct a server using an Object-Oriented Programming (OOP) approach, adhering to clean code best practices.  
 I developed a custom **Core Module** without any dependencies, which includes:
