@@ -1,10 +1,10 @@
 import Koa from "koa";
+import dotenv from "dotenv";
 import { IoCContainer } from "./IoCContainer";
 import { ApplicationConfig } from "../config/ApplicationConfig";
-
+dotenv.config();
 
 export class Application {
-
     private static instance: Application;
     public readonly app: Koa;
     public readonly container: IoCContainer;
