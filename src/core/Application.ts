@@ -44,7 +44,8 @@ export class Application {
 
     public async registerModules(): Promise<void> {
         try {
-            const modulePaths: string[] = await glob("src/**/*Module.ts", {
+            const search = process.env.NODE_ENV === "production" ? "dist/**/*Module.js" : "src/**/*Module.ts";
+            const modulePaths: string[] = await glob(search, {
                 ignore: "node_modules/**",
                 absolute: true,
             });
@@ -73,7 +74,8 @@ export class Application {
 
     public async registerMiddlewares(): Promise<void> {
         try {
-            const middlewarePaths: string[] = await glob("src/**/*.middleware.ts", {
+            const search = process.env.NODE_ENV === "production" ? "dist/**/*.middleware.js" : "src/**/*.middleware.ts";
+            const middlewarePaths: string[] = await glob(search, {
                 ignore: "node_modules/**",
                 absolute: true,
             });
@@ -82,7 +84,14 @@ export class Application {
                 let middleware;
                 try {
                     middleware = await import(relativePath);
-                    middleware?.default ? this.app.use(middleware.default()) : this.app.use(middleware());
+
+                    // Account for regular and default exports, but also compiled JS has default.default for some reason
+                    if (middleware.default.default) this.app.use(middleware.default.default());
+                    else if (middleware.default) this.app.use(middleware.default());
+                    else if (middleware && !middleware.default) this.app.use(middleware());
+                    else {
+                        throw new Error("No middleware!");
+                    }
                 } catch (err: unknown) {
                     console.error(err);
                     throw new Error("Error importing middleware");
