@@ -2,7 +2,7 @@
     "name": "koa-knex",
     "version": "1.0.0",
     "description": "",
-    "main": "index.js",
+    "main": "/src/server.ts",
     "scripts": {
         "build": "tsc",
         "start": "node dist/server.js",
@@ -17,6 +17,7 @@
         "@koa/bodyparser": "^5.0.0",
         "@koa/router": "^12.0.1",
         "dotenv": "^16.4.1",
+        "glob": "^10.3.10",
         "knex": "^3.1.0",
         "koa": "^2.15.0",
         "koa-helmet": "^7.0.2",
