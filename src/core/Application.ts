@@ -44,8 +44,8 @@ export class Application {
 
     public async registerModules(): Promise<void> {
         try {
-            const search = process.env.NODE_ENV === "production" ? "dist/**/*Module.js" : "src/**/*Module.ts";
-            const modulePaths: string[] = await glob(search, {
+            const searchPath = process.env.NODE_ENV === "production" ? "dist/**/*Module.js" : "src/**/*Module.ts";
+            const modulePaths: string[] = await glob(searchPath, {
                 ignore: "node_modules/**",
                 absolute: true,
             });

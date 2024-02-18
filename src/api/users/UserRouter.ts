@@ -3,13 +3,14 @@ import { Context, Next } from "koa";
 import { CrudRepository } from "../interfaces/CrudRepository.interface";
 import { User } from "./UserEntity.interface";
 import { IoCContainer } from "../../core/IoCContainer";
+import { UserService } from "./UserService";
 
 export class UserRouter {
-    private readonly userRepository: CrudRepository<User>;
+    private readonly userService: UserService;
     private readonly userRouter: Router;
 
     public constructor() {
-        this.userRepository = IoCContainer.getInstance().resolve("UserRepository");
+        this.userService = IoCContainer.getInstance().resolve("UserService");
         this.userRouter = new Router();
 
         this.userRouter.get("/users", async (ctx: Context, next: Next): Promise<void> => {
@@ -18,7 +19,7 @@ export class UserRouter {
             ctx.response.body = { message: "users endpoint" };
 
             try {
-                const users: User[] = await this.userRepository.find();
+                const users: User[] = await this.userService.find();
                 ctx.response.body = users;
             } catch (err: unknown) {
                 ctx.response.body = err;
