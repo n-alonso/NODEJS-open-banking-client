@@ -85,13 +85,13 @@ export class Application {
                 try {
                     middleware = await import(relativePath);
 
-                    // Account for regular and default exports, but also compiled JS has default.default for some reason
-                    if (middleware.default.default) this.app.use(middleware.default.default());
-                    else if (middleware.default) this.app.use(middleware.default());
-                    else if (middleware && !middleware.default) this.app.use(middleware());
-                    else {
-                        throw new Error("No middleware!");
-                    }
+                    // Compiled JS for prod env includes default.default for some reason
+                    if (middleware.default.default) this.app.use(middleware.default.default);
+                    // TS Default imports for dev env
+                    else if (middleware.default) this.app.use(middleware.default);
+                    // TS Named imports for dev env
+                    else if (middleware && !middleware.default) this.app.use(middleware);
+                    else throw new Error("No middleware!");
                 } catch (err: unknown) {
                     console.error(err);
                     throw new Error("Error importing middleware");
