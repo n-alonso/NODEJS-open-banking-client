@@ -1,6 +1,5 @@
 import Router from "@koa/router";
 import { Context, Next } from "koa";
-import { CrudRepository } from "../interfaces/CrudRepository.interface";
 import { User } from "./UserEntity.interface";
 import { IoCContainer } from "../../core/IoCContainer";
 import { UserService } from "./UserService";
