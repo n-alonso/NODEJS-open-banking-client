@@ -35,7 +35,7 @@ This architecture should allow anyone to add new middlewares and new modules wit
 - **Singleton**: To instantiate the IoC Container and Application class, amongst others.
 - **Proxy**: While not a traditional use of the Proxy pattern, the encapsulation of each route in a RouterClass implements some proxy-like behaviour (lazy instantiation, controlling and managing access, etc).
 - **Chain of Responsibility**: The request passes through a chain of middlewares until it is fully processed or rejected.
-- - **TBD | Strategy**: To choose between different Databases, to choose from different sorting algorithms, or to choose different authentication methods.
+- **TBD | Strategy**: To choose between different Databases, to choose from different sorting algorithms, or to choose different authentication methods.
 - **TBD | Iterator**: For the Binary Trees and Priority Queues I plan to implement.
 - **TBD | Visitor**: For policies that get 'read-only' access to the request context and reject/allow the request to proceed.
 - **TBD | Template Method**: To validate data.
