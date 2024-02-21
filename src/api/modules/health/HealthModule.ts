@@ -1,5 +1,5 @@
 import Koa from "koa";
-import { IoCContainer } from "../../core/IoCContainer";
+import { IoCContainer } from "../../../core/IoCContainer";
 import { HealthRouter } from "./HealthRouter";
 import Router from "@koa/router";
 const container: IoCContainer = IoCContainer.getInstance();

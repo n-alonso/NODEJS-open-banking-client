@@ -1,7 +1,7 @@
 import Router from "@koa/router";
 import { Context, Next } from "koa";
 import { User } from "./UserEntity.interface";
-import { IoCContainer } from "../../core/IoCContainer";
+import { IoCContainer } from "../../../core/IoCContainer";
 import { UserService } from "./UserService";
 
 export class UserRouter {

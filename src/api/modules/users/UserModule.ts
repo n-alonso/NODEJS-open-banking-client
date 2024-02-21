@@ -1,5 +1,5 @@
 import Koa from "koa";
-import { IoCContainer } from "../../core/IoCContainer";
+import { IoCContainer } from "../../../core/IoCContainer";
 import { UserRepository } from "./UserRepository";
 import { UserRouter } from "./UserRouter";
 import Router from "@koa/router";

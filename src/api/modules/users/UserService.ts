@@ -1,4 +1,4 @@
-import { IoCContainer } from "../../core/IoCContainer";
+import { IoCContainer } from "../../../core/IoCContainer";
 import { User } from "./UserEntity.interface";
 import { UserRepository } from "./UserRepository";
 

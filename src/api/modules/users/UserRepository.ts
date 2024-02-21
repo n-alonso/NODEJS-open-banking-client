@@ -1,7 +1,7 @@
 import { Knex } from "knex";
 import { User } from "./UserEntity.interface";
-import { CrudRepository } from "../interfaces/CrudRepository.interface";
-import { IoCContainer } from "../../core/IoCContainer";
+import { CrudRepository } from "../../../db/CrudRepository.interface";
+import { IoCContainer } from "../../../core/IoCContainer";
 
 export class UserRepository implements CrudRepository<User> {
     readonly dataSource: Knex;
