@@ -18,11 +18,24 @@ This architecture should allow anyone to add new middlewares and new modules wit
 - [Usage](#usage)
 
 ## This project utilizes the following Tech-Stack:
-- Node.js
-- Koa.js
-- TypeScript
-- Databases: Postgres (Knex), TBD | MongoDB (Mongoose)
-- TBD | Jest
+- Runtime:
+  - Node.js
+- Implementation:
+  - Koa.js
+  - TypeScript
+- Databases:
+  - Postgres (Knex)
+  - TBD | MongoDB (Mongoose)
+- Infrastructure:
+  - TBD | Google Cloud Platform (GPC)
+  - TBD | Github Actions
+  - TBD | Docker
+- TBD | Testing:
+  - TBD | Jest
+- Other:
+  - FS Scanning: Glob
+  - Logger: Winston
+  - Styling: Eslint, Prettier
 
 ## I strived to adhere to SOLID principles:
 - **Single Responsibility**: The project's structure exemplifies this, with each file dedicated to a single responsibility (routes, services, repositories, etc).
