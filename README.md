@@ -23,7 +23,7 @@ This architecture should allow anyone to add new middlewares and new modules wit
 - Implementation:
   - Koa.js
   - TypeScript
-- Databases:
+- Data Sources:
   - Postgres (Knex)
   - TBD | MongoDB (Mongoose)
 - Infrastructure:
