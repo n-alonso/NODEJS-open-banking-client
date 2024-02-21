@@ -4,17 +4,21 @@ import { ApplicationConfig } from "../config/ApplicationConfig";
 import { DataSource } from "../db/DataSource";
 import { glob } from "glob";
 import path from "path";
+import winston from "winston";
+import { Logger } from "../libs/Logger";
 
 export class Application {
     private static instance: Application;
     public readonly app: Koa;
     public readonly container: IoCContainer;
     public readonly config: ApplicationConfig;
+    private readonly logger: winston.Logger;
 
     private constructor() {
         this.app = new Koa();
         this.container = IoCContainer.getInstance();
-        this.config = new ApplicationConfig();
+        this.config = ApplicationConfig.getApplicationConfig();
+        this.logger = new Logger(Application.name).getLogger();
     }
 
     public static getInstance(): Application {
@@ -38,7 +42,7 @@ export class Application {
     public bootstrap(): void {
         const PORT: number = this.config.PORT;
         this.app.listen(PORT, (): void => {
-            console.info(`Listening on port ${PORT}`);
+            this.logger.info(`Listening on port ${PORT}`);
         });
     }
 
@@ -62,12 +66,12 @@ export class Application {
                     module?.[moduleName]?.load?.(this.app);
                     module?.default?.[moduleName]?.load?.(this.app);
                 } catch (err: unknown) {
-                    console.error(err);
+                    this.logger.error(err);
                     throw new Error("Error importing module");
                 }
             }
         } catch (err: unknown) {
-            console.error(err);
+            this.logger.error(err);
             throw new Error("Error scanning for modules");
         }
     }
@@ -93,12 +97,12 @@ export class Application {
                     else if (middleware && !middleware.default) this.app.use(middleware);
                     else throw new Error("No middleware!");
                 } catch (err: unknown) {
-                    console.error(err);
+                    this.logger.error(err);
                     throw new Error("Error importing middleware");
                 }
             }
         } catch (err: unknown) {
-            console.error(err);
+            this.logger.error(err);
             throw new Error("Error scanning for middlewares");
         }
     }

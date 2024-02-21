@@ -30,7 +30,6 @@ export class IoCContainer {
     }
 
     public getDataSource(): Knex {
-        console.log("inside the method!");
         return this.dataSource;
     }
 
