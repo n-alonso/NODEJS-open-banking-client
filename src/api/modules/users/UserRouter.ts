@@ -8,6 +8,7 @@ import isAdmin from "../../policies/isAdmin";
 import isSelf from "../../policies/isSelf";
 import winston from "winston";
 import { Logger } from "../../../libs/Logger";
+import { UserRoles } from "./models/UserRoles.enum";
 
 export class UserRouter {
     private readonly userService: UserService;
@@ -47,6 +48,26 @@ export class UserRouter {
             } catch (err: unknown) {
                 this.logger.error(err);
                 ctx.throw(500, "Error fetching user");
+            }
+        });
+
+        this.userRouter.patch("/:id", async (ctx: Context) => {
+            const token: string | undefined = ctx.cookies.get("auth_token");
+            if (!isAuthenticated(token) || !isAdmin(token)) {
+                ctx.throw(403, "Not Authorised");
+            }
+
+            const id: string = ctx.params.id;
+            const role: UserRoles | undefined = (ctx.body as { role?: UserRoles }).role;
+
+            if (!role) ctx.throw(400, "Role is required");
+
+            try {
+                const user: User = await this.userService.updateRole(id, role);
+                ctx.response.body = { status: "Success", updated: user };
+            } catch (err: unknown) {
+                this.logger.error(err);
+                ctx.throw(500, "Error updating user");
             }
         });
 

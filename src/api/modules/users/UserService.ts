@@ -27,8 +27,8 @@ export class UserService {
         return existingUser;
     }
 
-    public async updateRole(id: string, role: UserRoles) {
-        this.repository.updateBy("id", id, "role", role);
+    public async updateRole(id: string, role: UserRoles): Promise<User> {
+        return await this.repository.updateBy("id", id, "role", role);
     }
 
     public async deleteById(id: string): Promise<User> {
