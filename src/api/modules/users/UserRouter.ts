@@ -1,27 +1,67 @@
 import Router from "@koa/router";
-import { Context, Next } from "koa";
-import { User } from "./UserEntity.interface";
+import { Context } from "koa";
+import { User } from "./models/UserEntity.interface";
 import { IoCContainer } from "../../../core/IoCContainer";
 import { UserService } from "./UserService";
+import isAuthenticated from "../../policies/isAuthenticated";
+import isAdmin from "../../policies/isAdmin";
+import isSelf from "../../policies/isSelf";
+import winston from "winston";
+import { Logger } from "../../../libs/Logger";
 
 export class UserRouter {
     private readonly userService: UserService;
     private readonly userRouter: Router;
+    private readonly logger: winston.Logger;
 
     public constructor() {
         this.userService = IoCContainer.getInstance().resolve("UserService");
-        this.userRouter = new Router();
+        this.logger = new Logger(UserRouter.name).getLogger();
+        this.userRouter = new Router({ prefix: "/users" });
 
-        this.userRouter.get("/users", async (ctx: Context, next: Next): Promise<void> => {
-            await next();
-
-            ctx.response.body = { message: "users endpoint" };
+        this.userRouter.get("/", async (ctx: Context): Promise<void> => {
+            const token: string | undefined = ctx.cookies.get("auth_token");
+            if (!isAuthenticated(token) || !isAdmin(token)) {
+                ctx.throw(403, "Not Authorised");
+            }
 
             try {
                 const users: User[] = await this.userService.find();
                 ctx.response.body = users;
             } catch (err: unknown) {
-                ctx.response.body = err;
+                this.logger.error(err);
+                ctx.throw(500, "Error fetching users");
+            }
+        });
+
+        this.userRouter.get("/:id", async (ctx: Context) => {
+            const token: string | undefined = ctx.cookies.get("auth_token");
+            const id: string = ctx.params.id;
+            if (!isAuthenticated(token) || !isSelf(token, id) || !isAdmin(token)) {
+                ctx.throw(403, "Not Authorised");
+            }
+
+            try {
+                const user: User = await this.userService.findById(ctx.params.id);
+                ctx.response.body = user;
+            } catch (err: unknown) {
+                this.logger.error(err);
+                ctx.throw(500, "Error fetching user");
+            }
+        });
+
+        this.userRouter.delete("/:id", async (ctx: Context) => {
+            const token: string | undefined = ctx.cookies.get("auth_token");
+            if (!isAuthenticated(token) || !isAdmin(token)) {
+                ctx.throw(403, "Not Authorised");
+            }
+
+            try {
+                const user: User = await this.userService.deleteById(ctx.params.id);
+                ctx.response.body = { status: "Success", deleted: user };
+            } catch (err: unknown) {
+                this.logger.error(err);
+                ctx.throw(500, "Error deleting user");
             }
         });
     }

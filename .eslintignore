@@ -1,3 +1,7 @@
 # Compiled JS
 
 dist/
+
+# Other
+
+scripts/

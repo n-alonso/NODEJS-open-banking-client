@@ -32,11 +32,11 @@ export class Application {
         // Register the DataSource first, as it is needed by the modules
         this.container.register(DataSource.name, DataSource.getInstance());
 
-        // Load all middlewares into the app
-        this.registerMiddlewares();
-
         // Scan the repo and automatically register all modules
-        this.registerModules();
+        await this.registerModules();
+
+        // Load all middlewares into the app
+        await this.registerMiddlewares();
     }
 
     public bootstrap(): void {
