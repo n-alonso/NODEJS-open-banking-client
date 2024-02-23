@@ -11,4 +11,5 @@ import { RateLimit } from "koa2-ratelimit";
 export default RateLimit.middleware({
     interval: { min: 1 },
     max: 15,
+    whitelist: ["example_ip", "another_ip"],
 });
