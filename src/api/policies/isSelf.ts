@@ -14,7 +14,7 @@ export default function (ctx: Context, next: Next): void {
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as PayloadWithId;
-        if (decoded?.id === Number(id)) next();
+        if (decoded?.id === Number(id) || decoded?.role === "admin") next();
     } catch (err: unknown) {
         ctx.throw(403, "Not authorised");
     }
