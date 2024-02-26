@@ -24,16 +24,11 @@ export class UserRepository implements CrudRepository<User> {
     }
 
     public async findBy(byKey: string, byValue: unknown): Promise<User> {
-        try {
-            return await this.dataSource
-                .select()
-                .from("users")
-                .where({ [byKey]: byValue })
-                .first();
-        } catch (err: unknown) {
-            this.logger.error(err);
-            throw err;
-        }
+        return await this.dataSource
+            .select()
+            .from("users")
+            .where({ [byKey]: byValue })
+            .first();
     }
 
     public async create(user: Omit<User, "id">): Promise<User> {

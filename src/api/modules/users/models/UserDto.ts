@@ -3,14 +3,14 @@ import { UserRoles } from "./UserRoles.enum";
 
 export class UserDto implements Omit<User, "id"> {
     readonly googleid: string;
-    readonly name: string | undefined;
-    readonly email: string | undefined;
+    readonly name?: string | undefined;
+    readonly email?: string | undefined;
     readonly role: UserRoles;
 
     constructor(
         googleid: string,
-        name: string | undefined,
-        email: string | undefined,
+        name?: string | undefined,
+        email?: string | undefined,
         role: UserRoles = UserRoles.User,
     ) {
         this.googleid = googleid;

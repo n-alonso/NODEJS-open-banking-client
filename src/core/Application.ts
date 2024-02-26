@@ -2,6 +2,7 @@ import Koa from "koa";
 import { IoCContainer } from "./IoCContainer";
 import { ApplicationConfig } from "../config/ApplicationConfig";
 import { DataSource } from "../db/DataSource";
+import { onError } from "../api/middlewares/common/onError.middleware";
 import { glob } from "glob";
 import path from "path";
 import winston from "winston";
@@ -29,14 +30,12 @@ export class Application {
     }
 
     public async register(): Promise<void> {
-        // Register the DataSource first, as it is needed by the modules
-        this.container.register(DataSource.name, DataSource.getInstance());
-
-        // Scan the repo and automatically register all modules
-        await this.registerModules();
-
-        // Load all middlewares into the app
+        await this.registerErrorMiddleware();
+        this.registerDataSource();
+        await this.registerRepositories();
+        await this.registerServices();
         await this.registerMiddlewares();
+        await this.registerRouters();
     }
 
     public bootstrap(): void {
@@ -46,56 +45,111 @@ export class Application {
         });
     }
 
-    public async registerModules(): Promise<void> {
+    private registerDataSource(): void {
+        this.container.register(DataSource.name, DataSource.getInstance());
+    }
+
+    private async registerRepositories(): Promise<void> {
         try {
-            const searchPath = process.env.NODE_ENV === "production" ? "dist/**/*Module.js" : "src/**/*Module.ts";
-            const modulePaths: string[] = await glob(searchPath, {
+            const search =
+                process.env.NODE_ENV === "production"
+                    ? "dist/api/modules/**/*Repository.js"
+                    : "src/api/modules/**/*Repository.ts";
+            const repositoryPaths: string[] = await glob(search, {
                 ignore: "node_modules/**",
                 absolute: true,
             });
-            for (const absolutePath of modulePaths) {
+            for (const absolutePath of repositoryPaths) {
                 const relativePath = path.relative(__dirname, absolutePath);
-                const moduleName = path.basename(relativePath).replace(/.[tj]s$/, "");
-                let module;
+                const fileExtension = path.extname(relativePath);
+                const fileName = path.basename(relativePath, fileExtension);
+
+                let importedRepository;
                 try {
-                    module = await import(relativePath);
-                    // Register dependencies in the container
-                    module?.[moduleName]?.register();
-                    module?.default?.[moduleName]?.register();
-                    // Load routes into the app
-                    module?.[moduleName]?.load?.(this.app);
-                    module?.default?.[moduleName]?.load?.(this.app);
+                    importedRepository = await import(relativePath);
+                    const repositoryClass =
+                        importedRepository?.default?.default?.[fileName] ||
+                        importedRepository?.default?.[fileName] ||
+                        importedRepository?.[fileName];
+                    if (!repositoryClass) throw new Error("No repository!");
+
+                    this.container.register(repositoryClass.name, new repositoryClass());
                 } catch (err: unknown) {
                     this.logger.error(err);
-                    throw new Error("Error importing module");
+                    throw new Error("Error registering repository");
                 }
             }
         } catch (err: unknown) {
             this.logger.error(err);
-            throw new Error("Error scanning for modules");
+            throw new Error("Error scanning for repositories");
         }
     }
 
-    public async registerMiddlewares(): Promise<void> {
+    private async registerServices(): Promise<void> {
         try {
-            const search = process.env.NODE_ENV === "production" ? "dist/**/*.middleware.js" : "src/**/*.middleware.ts";
-            const middlewarePaths: string[] = await glob(search, {
+            const search =
+                process.env.NODE_ENV === "production"
+                    ? "dist/api/modules/**/*Service.js"
+                    : "src/api/modules/**/*Service.ts";
+            const servicePaths: string[] = await glob(search, {
                 ignore: "node_modules/**",
+                absolute: true,
+            });
+            for (const absolutePath of servicePaths) {
+                const relativePath = path.relative(__dirname, absolutePath);
+                const fileExtension = path.extname(relativePath);
+                const fileName = path.basename(relativePath, fileExtension);
+
+                let importedService;
+                try {
+                    importedService = await import(relativePath);
+                    const serviceClass =
+                        importedService?.default?.default?.[fileName] ||
+                        importedService?.default?.[fileName] ||
+                        importedService?.[fileName];
+                    if (!serviceClass) throw new Error("No service!");
+
+                    this.container.register(serviceClass.name, new serviceClass());
+                } catch (err: unknown) {
+                    this.logger.error(err);
+                    throw new Error("Error registering service");
+                }
+            }
+        } catch (err: unknown) {
+            this.logger.error(err);
+            throw new Error("Error scanning for services");
+        }
+    }
+
+    private async registerErrorMiddleware(): Promise<void> {
+        try {
+            this.app.use(onError);
+        } catch (err: unknown) {
+            this.logger.error(err);
+            throw new Error("Error importing error middleware");
+        }
+    }
+
+    private async registerMiddlewares(): Promise<void> {
+        try {
+            const search =
+                process.env.NODE_ENV === "production"
+                    ? "dist/api/middlewares/**/*.middleware.js"
+                    : "src/api/middlewares/**/*.middleware.ts";
+            const middlewarePaths: string[] = await glob(search, {
+                ignore: ["node_modules/**", "**/*onError.middleware.ts"],
                 absolute: true,
             });
             for (const absolutePath of middlewarePaths) {
                 const relativePath = path.relative(__dirname, absolutePath);
-                let middleware;
+                let importedMiddleware;
                 try {
-                    middleware = await import(relativePath);
+                    importedMiddleware = await import(relativePath);
+                    const middleware =
+                        importedMiddleware?.default?.default || importedMiddleware?.default || importedMiddleware;
+                    if (!middleware) throw new Error("No middleware!");
 
-                    // Compiled JS for prod env includes default.default for some reason
-                    if (middleware.default.default) this.app.use(middleware.default.default);
-                    // TS Default imports for dev env
-                    else if (middleware.default) this.app.use(middleware.default);
-                    // TS Named imports for dev env
-                    else if (middleware && !middleware.default) this.app.use(middleware);
-                    else throw new Error("No middleware!");
+                    this.app.use(middleware);
                 } catch (err: unknown) {
                     this.logger.error(err);
                     throw new Error("Error importing middleware");
@@ -104,6 +158,45 @@ export class Application {
         } catch (err: unknown) {
             this.logger.error(err);
             throw new Error("Error scanning for middlewares");
+        }
+    }
+
+    private async registerRouters(): Promise<void> {
+        try {
+            const search =
+                process.env.NODE_ENV === "production"
+                    ? "dist/api/modules/**/*Router.js"
+                    : "src/api/modules/**/*Router.ts";
+            const routerPaths: string[] = await glob(search, {
+                ignore: "node_modules/**",
+                absolute: true,
+            });
+            for (const absolutePath of routerPaths) {
+                const relativePath = path.relative(__dirname, absolutePath);
+                const fileExtension = path.extname(relativePath);
+                const fileName = path.basename(relativePath, fileExtension);
+
+                let importedRouter;
+                try {
+                    importedRouter = await import(relativePath);
+                    const routerClass =
+                        importedRouter?.default?.default?.[fileName] ||
+                        importedRouter?.default?.[fileName] ||
+                        importedRouter?.[fileName];
+                    if (!routerClass) throw new Error("No router!");
+                    const routerInstance = new routerClass();
+                    const router = routerInstance.getRouter();
+
+                    this.app.use(router.routes());
+                    this.app.use(router.allowedMethods());
+                } catch (err: unknown) {
+                    this.logger.error(err);
+                    throw new Error("Error applying router");
+                }
+            }
+        } catch (err: unknown) {
+            this.logger.error(err);
+            throw new Error("Error scanning for routers");
         }
     }
 }

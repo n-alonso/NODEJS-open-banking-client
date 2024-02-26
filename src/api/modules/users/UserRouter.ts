@@ -8,16 +8,19 @@ import isAdmin from "../../policies/isAdmin";
 import isSelf from "../../policies/isSelf";
 import winston from "winston";
 import { Logger } from "../../../libs/Logger";
+import { Crypto } from "../../../libs/Crypto";
 import { UserRoles } from "./models/UserRoles.enum";
 
 export class UserRouter {
     private readonly userService: UserService;
     private readonly userRouter: Router;
     private readonly logger: winston.Logger;
+    private readonly crypto: Crypto;
 
     public constructor() {
         this.userService = IoCContainer.getInstance().resolve("UserService");
         this.logger = new Logger(UserRouter.name).getLogger();
+        this.crypto = new Crypto();
         this.userRouter = new Router({ prefix: "/users" });
 
         this.userRouter.get("/", isAuthenticated, isAdmin, async (ctx: Context): Promise<void> => {
@@ -34,8 +37,17 @@ export class UserRouter {
             const id: string = ctx.params.id;
 
             try {
-                const user: User = await this.userService.findById(ctx.params.id);
-                ctx.response.body = user;
+                const user: User = await this.userService.findById(id); //
+
+                const body = {
+                    id: user.id,
+                    googleid: this.crypto.decrypt(user.googleid),
+                    name: user.name && this.crypto.decrypt(user.name),
+                    email: user.email && this.crypto.decrypt(user.email),
+                    role: user.role,
+                };
+                ctx.response.body = body;
+                return;
             } catch (err: unknown) {
                 this.logger.error(err);
                 ctx.throw(500, "Error fetching user");
