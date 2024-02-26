@@ -5,7 +5,7 @@ interface PayloadWithId extends jwt.JwtPayload {
     id: number;
 }
 
-export default function (ctx: Context, next: Next): void {
+export default async function (ctx: Context, next: Next): Promise<void> {
     const token: string | undefined = ctx.cookies.get("auth_token");
     const id: string = ctx.params.id;
     if (!token) {
@@ -14,10 +14,9 @@ export default function (ctx: Context, next: Next): void {
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as PayloadWithId;
-        if (decoded?.id === Number(id) || decoded?.role === "admin") next();
+        if (decoded?.id === Number(id) || decoded?.role === "admin") await next();
+        else ctx.throw(403, "Not authorised");
     } catch (err: unknown) {
         ctx.throw(403, "Not authorised");
     }
-
-    ctx.throw(403, "Not authorised");
 }
