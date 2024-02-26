@@ -38,6 +38,7 @@ Also wanted to make a project that showcases my knowledge and skills, so many fe
   - FS Scanning: Glob
   - Logger: Winston
   - Styling: Eslint, Prettier
+  - Crypto: Node Crypto
  
 ## Security:
 I've tried to add most of the common security features that you would typically add to a production-ready application:
@@ -46,7 +47,7 @@ I've tried to add most of the common security features that you would typically 
 - Jwt - Set a jwt cookie once logged in.
 - RBAC - Users have roles ('user' & 'admin') that are guarded with policies.
 - Policies - Implemented per route/endpoint (Ie. isAuthenticated, isAdmin, isSelf).
-- TBD | Encryption at rest - Bcrypt is used to encrypt/decrypt all user details.
+- Encryption at rest - Node Crypto is used to encrypt/decrypt all user details.
 - TBD | Encryption in transit - Digital Ocean provides SSL certificates for the api to be served via HTTPS protocol.
 
 ## I strived to adhere to SOLID principles:
@@ -98,5 +99,5 @@ Available Scripts:
 3. Stop the server.
 4. Elevate your first user to 'admin' with `yarn user:elevate <user_id>` with the `id` returned from step 2.
 5. Re-start the server.
-6. Now you should be able to fetch user at the `/users` endpoint.
+6. Now you should be able to fetch users at the `/users` endpoint.
 7. Alternatively, any non-admin (role 'user') user should be able to fetch itself at the `/users/:id` endpoint, granted that it is authenticated correctly.
