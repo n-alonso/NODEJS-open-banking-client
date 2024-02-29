@@ -1,4 +1,4 @@
-import { UserRoles } from "./UserRoles.enum";
+import { UserRoles } from "./user-roles";
 
 export interface User {
     readonly id: number;

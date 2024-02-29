@@ -1,7 +1,7 @@
-import { IoCContainer } from "../../../core/IoCContainer";
-import { User } from "./models/UserEntity.interface";
-import { UserRoles } from "./models/UserRoles.enum";
-import { UserRepository } from "./UserRepository";
+import { IoCContainer } from "../../../core/ioc-container";
+import { User } from "./models/user-entity";
+import { UserRoles } from "./models/user-roles";
+import { UserRepository } from "./repository";
 
 export class UserService {
     readonly repository: UserRepository;

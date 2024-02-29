@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
-import { Application } from "./core/Application";
+import { Orchestrator } from "./core/app-orchestrator";
 
-const server: Application = Application.getInstance();
+const server: Orchestrator = Orchestrator.getInstance();
 server.register();
 server.bootstrap();

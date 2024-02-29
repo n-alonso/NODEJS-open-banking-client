@@ -1,15 +1,15 @@
 import Router from "@koa/router";
 import { Context } from "koa";
-import { User } from "./models/UserEntity.interface";
-import { IoCContainer } from "../../../core/IoCContainer";
-import { UserService } from "./UserService";
-import isAuthenticated from "../../policies/isAuthenticated";
-import isAdmin from "../../policies/isAdmin";
-import isSelf from "../../policies/isSelf";
+import { User } from "./models/user-entity";
+import { IoCContainer } from "../../../core/ioc-container";
+import { UserService } from "./service";
+import isAuthenticated from "../../policies/is-authenticated";
+import isAdmin from "../../policies/is-admin";
+import isSelf from "../../policies/is-self";
 import winston from "winston";
+import { UserRoles } from "./models/user-roles";
 import { Logger } from "../../../libs/Logger";
-import { Crypto } from "../../../libs/Crypto";
-import { UserRoles } from "./models/UserRoles.enum";
+import { Crypto } from "../../../libs/crypto";
 
 export class UserRouter {
     private readonly userService: UserService;

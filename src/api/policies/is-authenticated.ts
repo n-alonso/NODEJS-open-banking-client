@@ -7,9 +7,13 @@ export default async function (ctx: Context, next: Next): Promise<void> {
         ctx.throw(401, "Authentication required");
     }
     try {
+        console.log("AUTH");
         jwt.verify(token, process.env.JWT_SECRET as string);
+        console.log("AUTH");
         await next();
+        console.log("AUTH");
     } catch (err: unknown) {
+        console.log("AUTH ERR");
         ctx.throw(403, "Not authorised");
     }
 }

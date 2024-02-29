@@ -1,15 +1,15 @@
 import Koa from "koa";
-import { IoCContainer } from "./IoCContainer";
-import { ApplicationConfig } from "../config/ApplicationConfig";
-import { DataSource } from "../db/DataSource";
-import { onError } from "../api/middlewares/common/onError.middleware";
+import { IoCContainer } from "./ioc-container";
+import { ApplicationConfig } from "../config/application";
+import { DataSource } from "../db/data-source";
+import { onError } from "../api/middlewares/common/on-error";
 import { glob } from "glob";
 import path from "path";
 import winston from "winston";
 import { Logger } from "../libs/Logger";
 
-export class Application {
-    private static instance: Application;
+export class Orchestrator {
+    private static instance: Orchestrator;
     public readonly app: Koa;
     public readonly container: IoCContainer;
     public readonly config: ApplicationConfig;
@@ -19,14 +19,14 @@ export class Application {
         this.app = new Koa();
         this.container = IoCContainer.getInstance();
         this.config = ApplicationConfig.getApplicationConfig();
-        this.logger = new Logger(Application.name).getLogger();
+        this.logger = new Logger(Orchestrator.name).getLogger();
     }
 
-    public static getInstance(): Application {
-        if (!Application.instance) {
-            Application.instance = new Application();
+    public static getInstance(): Orchestrator {
+        if (!Orchestrator.instance) {
+            Orchestrator.instance = new Orchestrator();
         }
-        return Application.instance;
+        return Orchestrator.instance;
     }
 
     public async register(): Promise<void> {
@@ -53,24 +53,23 @@ export class Application {
         try {
             const search =
                 process.env.NODE_ENV === "production"
-                    ? "dist/api/modules/**/*Repository.js"
-                    : "src/api/modules/**/*Repository.ts";
+                    ? "dist/api/modules/**/repository.js"
+                    : "src/api/modules/**/repository.ts";
             const repositoryPaths: string[] = await glob(search, {
                 ignore: "node_modules/**",
                 absolute: true,
             });
             for (const absolutePath of repositoryPaths) {
                 const relativePath = path.relative(__dirname, absolutePath);
-                const fileExtension = path.extname(relativePath);
-                const fileName = path.basename(relativePath, fileExtension);
 
                 let importedRepository;
                 try {
                     importedRepository = await import(relativePath);
-                    const repositoryClass =
-                        importedRepository?.default?.default?.[fileName] ||
-                        importedRepository?.default?.[fileName] ||
-                        importedRepository?.[fileName];
+                    importedRepository =
+                        importedRepository?.default?.default || importedRepository?.default || importedRepository;
+
+                    const repositoryName = Object.keys(importedRepository)[0];
+                    const repositoryClass = importedRepository[repositoryName];
                     if (!repositoryClass) throw new Error("No repository!");
 
                     this.container.register(repositoryClass.name, new repositoryClass());
@@ -89,24 +88,22 @@ export class Application {
         try {
             const search =
                 process.env.NODE_ENV === "production"
-                    ? "dist/api/modules/**/*Service.js"
-                    : "src/api/modules/**/*Service.ts";
+                    ? "dist/api/modules/**/service.js"
+                    : "src/api/modules/**/service.ts";
             const servicePaths: string[] = await glob(search, {
                 ignore: "node_modules/**",
                 absolute: true,
             });
             for (const absolutePath of servicePaths) {
                 const relativePath = path.relative(__dirname, absolutePath);
-                const fileExtension = path.extname(relativePath);
-                const fileName = path.basename(relativePath, fileExtension);
 
                 let importedService;
                 try {
                     importedService = await import(relativePath);
-                    const serviceClass =
-                        importedService?.default?.default?.[fileName] ||
-                        importedService?.default?.[fileName] ||
-                        importedService?.[fileName];
+                    importedService = importedService?.default?.default || importedService?.default || importedService;
+
+                    const serviceName = Object.keys(importedService)[0];
+                    const serviceClass = importedService[serviceName];
                     if (!serviceClass) throw new Error("No service!");
 
                     this.container.register(serviceClass.name, new serviceClass());
@@ -133,11 +130,9 @@ export class Application {
     private async registerMiddlewares(): Promise<void> {
         try {
             const search =
-                process.env.NODE_ENV === "production"
-                    ? "dist/api/middlewares/**/*.middleware.js"
-                    : "src/api/middlewares/**/*.middleware.ts";
+                process.env.NODE_ENV === "production" ? "dist/api/middlewares/**/*.js" : "src/api/middlewares/**/*.ts";
             const middlewarePaths: string[] = await glob(search, {
-                ignore: ["node_modules/**", "**/*onError.middleware.ts"],
+                ignore: ["node_modules/**", "**/*on-error*"],
                 absolute: true,
             });
             for (const absolutePath of middlewarePaths) {
@@ -165,25 +160,24 @@ export class Application {
         try {
             const search =
                 process.env.NODE_ENV === "production"
-                    ? "dist/api/modules/**/*Router.js"
-                    : "src/api/modules/**/*Router.ts";
+                    ? "dist/api/modules/**/router.js"
+                    : "src/api/modules/**/router.ts";
             const routerPaths: string[] = await glob(search, {
                 ignore: "node_modules/**",
                 absolute: true,
             });
             for (const absolutePath of routerPaths) {
                 const relativePath = path.relative(__dirname, absolutePath);
-                const fileExtension = path.extname(relativePath);
-                const fileName = path.basename(relativePath, fileExtension);
 
                 let importedRouter;
                 try {
                     importedRouter = await import(relativePath);
-                    const routerClass =
-                        importedRouter?.default?.default?.[fileName] ||
-                        importedRouter?.default?.[fileName] ||
-                        importedRouter?.[fileName];
+                    importedRouter = importedRouter?.default?.default || importedRouter?.default || importedRouter;
+
+                    const routerName = Object.keys(importedRouter)[0];
+                    const routerClass = importedRouter[routerName];
                     if (!routerClass) throw new Error("No router!");
+
                     const routerInstance = new routerClass();
                     const router = routerInstance.getRouter();
 

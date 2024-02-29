@@ -1,10 +1,10 @@
 import passport from "koa-passport";
 import GooglePassport from "passport-google-oauth20";
-import { User } from "../../modules/users/models/UserEntity.interface";
-import { IoCContainer } from "../../../core/IoCContainer";
-import { UserService } from "../../modules/users/UserService";
-import { UserDto } from "../../modules/users/models/UserDto";
-import { Crypto } from "../../../libs/Crypto";
+import { User } from "../../modules/users/models/user-entity";
+import { IoCContainer } from "../../../core/ioc-container";
+import { UserService } from "../../modules/users/service";
+import { UserDto } from "../../modules/users/models/user-dto";
+import { Crypto } from "../../../libs/crypto";
 
 const googleStrategy = GooglePassport.Strategy;
 const container: IoCContainer = IoCContainer.getInstance();
@@ -13,9 +13,9 @@ const userService: UserService = container.resolve(UserService.name);
 passport.use(
     new googleStrategy(
         {
-            clientID: process.env.CLIENT_ID as string,
-            clientSecret: process.env.CLIENT_SECRET as string,
-            callbackURL: process.env.CALLBACK as string,
+            clientID: process.env.GOOGLE_CLIENT_ID as string,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+            callbackURL: process.env.GOOGLE_CALLBACK_URL as string,
         },
         async function (accessToken, refreshToken, profile, callback): Promise<void> {
             const crypto: Crypto = new Crypto();

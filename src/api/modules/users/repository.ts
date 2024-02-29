@@ -1,7 +1,7 @@
 import { Knex } from "knex";
-import { User } from "./models/UserEntity.interface";
-import { CrudRepository } from "../../../db/CrudRepository.interface";
-import { IoCContainer } from "../../../core/IoCContainer"; //
+import { User } from "./models/user-entity";
+import { CrudRepository } from "../../../db/models/crud-repository";
+import { IoCContainer } from "../../../core/ioc-container";
 import winston from "winston";
 import { Logger } from "../../../libs/Logger";
 

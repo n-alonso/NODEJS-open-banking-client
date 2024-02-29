@@ -1,5 +1,5 @@
-import { User } from "./UserEntity.interface";
-import { UserRoles } from "./UserRoles.enum";
+import { User } from "./user-entity";
+import { UserRoles } from "./user-roles";
 
 export class UserDto implements Omit<User, "id"> {
     readonly googleid: string;
