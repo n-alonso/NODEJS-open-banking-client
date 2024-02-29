@@ -3,8 +3,8 @@ The goal of this project is to construct a server using an Object-Oriented Progr
 
 ## TL;DR
 I wanted to practice building my own Core Module which includes an Inversion of Control (IoC) container with register/resolve pattern and an Application class with register/bootstrap pattern to handle application lyfecycle.
-The application register uses the `glob` package to scan the filesystem for components to loads them automatically.
-I used a Module encapsulating a Route > Service > Repository architechture, which in turn connects to dynamic DataSources (Knex for supported SQL database and Mongoose for MongoDB).
+The application register uses the `glob` package to scan the filesystem for components and middlewares to loads them automatically.
+I used a Route > Service > Repository architechture, which in turn connects to dynamic DataSources (Knex for supported SQL database and Mongoose for MongoDB).
 This architecture should allow anyone to add new middlewares and new modules with ease with minimal to no configuration to the applciation itself.
 
 Also wanted to make a project that showcases my knowledge and skills, so many features are 'forced' into the project and might not make sense in a practical scenario, yet they were added for the mere purpose of proving my ability to do them.
@@ -34,10 +34,13 @@ Also wanted to make a project that showcases my knowledge and skills, so many fe
   - TBD | Docker
 - TBD | Testing:
   - TBD | Jest
+- TBD | Documentation:
+  - TBD | Typedoc for automatically generated OAS
 - Other:
   - FS Scanning: Glob
   - Logger: Winston
   - Styling: Eslint, Prettier
+  - Crypto: Node Crypto
  
 ## Security:
 I've tried to add most of the common security features that you would typically add to a production-ready application:
@@ -46,14 +49,14 @@ I've tried to add most of the common security features that you would typically 
 - Jwt - Set a jwt cookie once logged in.
 - RBAC - Users have roles ('user' & 'admin') that are guarded with policies.
 - Policies - Implemented per route/endpoint (Ie. isAuthenticated, isAdmin, isSelf).
-- TBD | Encryption at rest - Bcrypt is used to encrypt/decrypt all user details.
+- Encryption at rest - Node Crypto is used to encrypt/decrypt all user details.
 - TBD | Encryption in transit - Digital Ocean provides SSL certificates for the api to be served via HTTPS protocol.
 
 ## I strived to adhere to SOLID principles:
 - **Single Responsibility**: The project's structure exemplifies this, with each file dedicated to a single responsibility (routes, services, repositories, etc).
 - **Open/Closed**: Not explicitly mentioned but implied through modular design that allows for extension without modification.
 - **Liskov Substitution**: Observed through generic classes like `CrudRepository` or `DataSource`.
-- **Interface Segregation**: Demonstrated with interfaces like `UserEntity` and how other interfaces or classes that are used as types are configured.
+- **Interface Segregation**: Demonstrated with interfaces like `UserEntity` and `UserDto` and how other interfaces or classes that are used as types are configured.
 - **Dependency Inversion**: Achieved through the strategic design of building an IoC Container and modularizing the project's architecture.
 
 ## Coding Patterns utilised:
@@ -62,20 +65,19 @@ I've tried to add most of the common security features that you would typically 
 - **Chain of Responsibility**: The request passes through a chain of middlewares until it is fully processed or rejected.
 - **TBD | Strategy**: To choose between different Databases, to choose from different sorting algorithms, or to choose different authentication methods.
 - **TBD | Iterator**: For the Binary Trees and Priority Queues I plan to implement.
-- **TBD | Visitor**: For policies that get 'read-only' access to the request context and reject/allow the request to proceed.
-- **TBD | Template Method**: To validate data.
+- **TBD | Template Method**: For the register method in the Application class, or to validate data.
 
 ## Data Structures:
 - **Map**: Used to keep track of dependencies in the IoCContainer.
-- **TBD | HashMap**: Im planning to use it for caching.
-- **TBD | Set**: Im planning to use it to keep track of roles and permissions for RBAC.
+- **Enum**: To implement roles for RBAC.
+- **TBD | HashMap**: Will be used for caching.
 - **TBD | Binary Trees**: A binary tree will be used to manage authentication and sessions (insertion/lookup).
 - **TBD | Priority Queue with Binary Heap implementation**: A priority queue will be used for task scheduling (Ie. Password-reset emails should have higher priority than promotional ones).
 
 ## Algorithms:
+- **Encryption**: Node's Crypto module is used for all user sensitive information.
 - **TBD | Sorting**: So the API can return sorted results.
 - **TBD | Binary Search**: In conjuction with the Binary Tree for session management.
-- **TBD | Hashing/Encryption**: For all sensitive information (Ie. Passwords).
 
 ## Installation
 This project presumes you have Node with v18 and Yarn installed and available.
@@ -98,5 +100,5 @@ Available Scripts:
 3. Stop the server.
 4. Elevate your first user to 'admin' with `yarn user:elevate <user_id>` with the `id` returned from step 2.
 5. Re-start the server.
-6. Now you should be able to fetch user at the `/users` endpoint.
+6. Now you should be able to fetch users at the `/users` endpoint.
 7. Alternatively, any non-admin (role 'user') user should be able to fetch itself at the `/users/:id` endpoint, granted that it is authenticated correctly.
