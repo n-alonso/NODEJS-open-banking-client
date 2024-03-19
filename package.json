@@ -10,7 +10,8 @@
         "lint": "eslint . --ext ts",
         "lint:fix": "eslint . --ext ts --fix",
         "test": "echo \"Error: no test specified\" && exit 1",
-        "user:elevate": "ts-node scripts/elevate-user.ts"
+        "user:elevate": "ts-node scripts/elevate-user.ts",
+        "dockerize": "scripts/dockerize.sh"
     },
     "author": "",
     "license": "ISC",

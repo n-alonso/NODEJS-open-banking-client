@@ -1,0 +1,13 @@
+.env
+.eslintignore
+.eslintrc.json
+.gitignore
+.prettierrc
+example.env
+README.md
+tsconfig.dev.json
+yarn-error.log
+yarn.lock
+node_modules/**/*
+dist/**/*
+logs/*.log
