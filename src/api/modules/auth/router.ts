@@ -2,7 +2,7 @@ import Router from "@koa/router";
 import passport from "koa-passport";
 import * as jwt from "jsonwebtoken";
 import winston from "winston";
-import { Logger } from "../../../libs/Logger";
+import { Logger } from "../../../libs/logger";
 
 export class AuthRouter {
     private readonly authRouter: Router;

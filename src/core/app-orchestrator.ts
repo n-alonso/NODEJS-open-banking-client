@@ -6,7 +6,7 @@ import { onError } from "../api/middlewares/common/on-error";
 import { glob } from "glob";
 import path from "path";
 import winston from "winston";
-import { Logger } from "../libs/Logger";
+import { Logger } from "../libs/logger";
 
 export class Orchestrator {
     private static instance: Orchestrator;
@@ -53,7 +53,7 @@ export class Orchestrator {
         try {
             const search =
                 process.env.NODE_ENV === "production"
-                    ? "dist/api/modules/**/repository.js"
+                    ? "dist/src/api/modules/**/repository.js"
                     : "src/api/modules/**/repository.ts";
             const repositoryPaths: string[] = await glob(search, {
                 ignore: "node_modules/**",
@@ -88,7 +88,7 @@ export class Orchestrator {
         try {
             const search =
                 process.env.NODE_ENV === "production"
-                    ? "dist/api/modules/**/service.js"
+                    ? "dist/src/api/modules/**/service.js"
                     : "src/api/modules/**/service.ts";
             const servicePaths: string[] = await glob(search, {
                 ignore: "node_modules/**",
@@ -130,7 +130,9 @@ export class Orchestrator {
     private async registerMiddlewares(): Promise<void> {
         try {
             const search =
-                process.env.NODE_ENV === "production" ? "dist/api/middlewares/**/*.js" : "src/api/middlewares/**/*.ts";
+                process.env.NODE_ENV === "production"
+                    ? "dist/src/api/middlewares/**/*.js"
+                    : "src/api/middlewares/**/*.ts";
             const middlewarePaths: string[] = await glob(search, {
                 ignore: ["node_modules/**", "**/*on-error*"],
                 absolute: true,
@@ -160,7 +162,7 @@ export class Orchestrator {
         try {
             const search =
                 process.env.NODE_ENV === "production"
-                    ? "dist/api/modules/**/router.js"
+                    ? "dist/src/api/modules/**/router.js"
                     : "src/api/modules/**/router.ts";
             const routerPaths: string[] = await glob(search, {
                 ignore: "node_modules/**",

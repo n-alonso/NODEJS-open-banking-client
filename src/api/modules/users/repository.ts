@@ -3,7 +3,7 @@ import { User } from "./models/user-entity";
 import { CrudRepository } from "../../../db/models/crud-repository";
 import { IoCContainer } from "../../../core/ioc-container";
 import winston from "winston";
-import { Logger } from "../../../libs/Logger";
+import { Logger } from "../../../libs/logger";
 
 export class UserRepository implements CrudRepository<User> {
     readonly dataSource: Knex;

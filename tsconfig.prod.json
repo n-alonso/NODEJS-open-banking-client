@@ -107,5 +107,5 @@
         "skipLibCheck": true /* Skip type checking all .d.ts files. */
     },
     "include": ["src/**/*", "knexfile.ts"],
-    "exclude": ["node_modules", "**/*.env", "*.gitignore", "**/*.config", "**/*.spec.ts", "***/*/dist/**/*"]
+    "exclude": ["node_modules", "**/*.env", "*.gitignore", "**/*.config", "**/*.spec.ts", "/dist/**/*"]
 }

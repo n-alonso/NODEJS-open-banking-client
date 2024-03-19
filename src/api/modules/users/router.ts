@@ -8,7 +8,7 @@ import isAdmin from "../../policies/is-admin";
 import isSelf from "../../policies/is-self";
 import winston from "winston";
 import { UserRoles } from "./models/user-roles";
-import { Logger } from "../../../libs/Logger";
+import { Logger } from "../../../libs/logger";
 import { Crypto } from "../../../libs/crypto";
 
 export class UserRouter {

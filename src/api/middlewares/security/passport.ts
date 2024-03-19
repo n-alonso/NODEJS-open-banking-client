@@ -17,7 +17,7 @@ passport.use(
             clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
             callbackURL: process.env.GOOGLE_CALLBACK_URL as string,
         },
-        async function (accessToken, refreshToken, profile, callback): Promise<void> {
+        async function (_accessToken, _refreshToken, profile, callback): Promise<void> {
             const crypto: Crypto = new Crypto();
 
             const { id, displayName, emails } = profile;
