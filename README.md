@@ -12,6 +12,7 @@ Also wanted to make a project that showcases my knowledge and skills, so many fe
 ## Table of Contents
 - [Tech-Stack](#this-project-utilizes-the-following-technology-stack)
 - [Security](#security)
+- [Infraestructure](#infraestructure)
 - [SOLID Principles](#i-strived-to-adhere-to-solid-principles)
 - [Coding Patterns Utilised](#coding-patterns-utilised)
 - [Data Structures](#data-structures)
@@ -27,11 +28,10 @@ Also wanted to make a project that showcases my knowledge and skills, so many fe
   - TypeScript
 - Data Sources:
   - Postgres (Knex)
-  - TBD | MongoDB (Mongoose)
 - Infrastructure:
+  - Docker
   - TBD | Digital Ocean
   - TBD | Github Actions
-  - TBD | Docker
 - TBD | Testing:
   - TBD | Jest
 - TBD | Documentation:
@@ -51,6 +51,10 @@ I've tried to add most of the common security features that you would typically 
 - Policies - Implemented per route/endpoint (Ie. isAuthenticated, isAdmin, isSelf).
 - Encryption at rest - Node Crypto is used to encrypt/decrypt all user details.
 - TBD | Encryption in transit - Digital Ocean provides SSL certificates for the api to be served via HTTPS protocol.
+
+## Infraestructure:
+- Docker: Dockerfile and .dockerignore files are available in this repository
+  - You can check the [published Docker Image](https://hub.docker.com/repository/docker/ajnick/open-banking-sandbox) for this project
 
 ## I strived to adhere to SOLID principles:
 - **Single Responsibility**: The project's structure exemplifies this, with each file dedicated to a single responsibility (routes, services, repositories, etc).
