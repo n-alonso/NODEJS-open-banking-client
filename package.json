@@ -5,7 +5,7 @@
     "main": "/src/server.ts",
     "scripts": {
         "build": "tsc -p tsconfig.prod.json",
-        "start": "tsc -p tsconfig.prod.json && node dist/src/server.js",
+        "start": "node dist/src/server.js",
         "start:dev": "nodemon --exec ts-node -P tsconfig.dev.json src/server.ts",
         "lint": "eslint . --ext ts",
         "lint:fix": "eslint . --ext ts --fix",
