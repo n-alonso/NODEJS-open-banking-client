@@ -1,22 +1,26 @@
-# WORK IN PROGRESS
-The goal of this project is to construct a server using an Object-Oriented Programming (OOP) approach, adhering to clean code best practices.  
+# Open Banking Sandbox (WORK IN PROGRESS)
+The goal of this project is to build a payment service using Open Banking APIs.  
+My intention is build a server using an Object-Oriented Programming (OOP) approach, adhering to clean code best practices and making it as 'production-ready' as I can.  
 
 ## TL;DR
 I wanted to practice building my own Core Module which includes an Inversion of Control (IoC) container with register/resolve pattern and an Application class with register/bootstrap pattern to handle application lyfecycle.
 The application register uses the `glob` package to scan the filesystem for components and middlewares to loads them automatically.
-I used a Route > Service > Repository architechture, which in turn connects to dynamic DataSources (Knex for supported SQL database and Mongoose for MongoDB).
+I used a Route > Service > Repository architechture, which in turn connects to dynamic DataSources to allow for future changes (Knex with Postgres initially).
 This architecture should allow anyone to add new middlewares and new modules with ease with minimal to no configuration to the applciation itself.
 
-Also wanted to make a project that showcases my knowledge and skills, so many features are 'forced' into the project and might not make sense in a practical scenario, yet they were added for the mere purpose of proving my ability to do them.
+Also wanted to make a project that showcases my knowledge and skills, so some of the features are 'forced' into the project and might not make sense in a practical scenario, yet they were added for the mere purpose of proving my ability to do them.
 
 ## Table of Contents
-- [Tech-Stack](#this-project-utilizes-the-following-technology-stack)
-- [Security](#security)
-- [Infraestructure](#infraestructure)
-- [SOLID Principles](#i-strived-to-adhere-to-solid-principles)
-- [Coding Patterns Utilised](#coding-patterns-utilised)
-- [Data Structures](#data-structures)
-- [Algorithms](#algorithms)
+- [Tech-Stack](#this-project-utilizes-the-following-tech-stack)
+- For Recruiters
+    - [Security](#security)
+  - DevOps
+    - [Infraestructure](#infraestructure)
+  - Backend
+    - [SOLID Principles](#i-strived-to-adhere-to-solid-principles)
+    - [Coding Patterns Utilised](#coding-patterns-utilised)
+    - [Data Structures](#data-structures)
+    - [Algorithms](#algorithms)
 - [Installation](#installation)
 - [Usage](#usage)
 
