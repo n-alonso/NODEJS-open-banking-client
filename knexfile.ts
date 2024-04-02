@@ -7,28 +7,20 @@ export default {
         client: String(process.env.DB_CLIENT),
         connection: String(process.env.DB_CONNECTION),
         migrations: {
-            directory: path.join(
-                __dirname + String(process.env.DB_MIGRATIONS_DIRECTORY),
-            ),
+            directory: path.join(__dirname + String(process.env.DB_MIGRATIONS_DIRECTORY)),
         },
         seeds: {
-            directory: path.join(
-                __dirname + String(process.env.DB_SEEDS_DIRECTORY),
-            ),
+            directory: path.join(__dirname + String(process.env.DB_SEEDS_DIRECTORY)),
         },
     },
     production: {
         client: String(process.env.DB_CLIENT),
-        connection: String(process.env.DB_CONNECTION),
+        connection: String(process.env.DOCKER_COMPOSE_CONNECTION),
         migrations: {
-            directory: path.join(
-                __dirname + String(process.env.DB_MIGRATIONS_DIRECTORY),
-            ),
+            directory: path.join(__dirname + String(process.env.DB_MIGRATIONS_DIRECTORY)),
         },
         seeds: {
-            directory: path.join(
-                __dirname + String(process.env.DB_SEEDS_DIRECTORY),
-            ),
+            directory: path.join(__dirname + String(process.env.DB_SEEDS_DIRECTORY)),
         },
     },
 };

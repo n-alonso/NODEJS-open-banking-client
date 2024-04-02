@@ -5,7 +5,7 @@ RUN mkdir /app && chown node:node /app
 WORKDIR /app
 USER node
 
-COPY package.json yarn.lock tsconfig.prod.json ./
+COPY package.json yarn.lock tsconfig.prod.json knexfile.ts ./
 
 RUN yarn install --prod  && yarn cache clean
 
@@ -20,7 +20,7 @@ RUN yarn build
 FROM base
 
 COPY package.json .
-COPY --from=build dist/ /app/dist/
+COPY --from=build /app/dist/ /app/dist/
 
 EXPOSE 9876
 
