@@ -1,4 +1,4 @@
-# Open Banking Sandbox (WORK IN PROGRESS)
+# Open Banking Client (WORK IN PROGRESS)
 The goal of this project is to build a payment service using Open Banking APIs.  
 My intention is build a server using an Object-Oriented Programming (OOP) approach, adhering to clean code best practices and making it as 'production-ready' as I can.  
 
