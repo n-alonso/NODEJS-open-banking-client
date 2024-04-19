@@ -1,18 +1,18 @@
 import knex, { Knex } from "knex";
-import knexFile from "../../knexfile";
+import knexFile from "../../../knexfile";
 
 const environment: string = process.env.NODE_ENV || "development";
 
-export class DataSource {
+export class SqlDataSource {
     private static dataSource: Knex;
 
     private constructor() {}
 
     public static getInstance(): Knex {
-        if (!DataSource.dataSource) {
+        if (!SqlDataSource.dataSource) {
             const config = knexFile[environment as keyof typeof knexFile];
-            DataSource.dataSource = knex(config);
+            SqlDataSource.dataSource = knex(config);
         }
-        return DataSource.dataSource;
+        return SqlDataSource.dataSource;
     }
 }

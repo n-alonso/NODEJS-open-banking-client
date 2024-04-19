@@ -1,7 +1,8 @@
 import Koa from "koa";
 import { IoCContainer } from "./ioc-container";
 import { ApplicationConfig } from "../config/application";
-import { DataSource } from "../db/data-source";
+import { SqlDataSource } from "../db/sources/sql";
+import { OpenBankingDataSource } from "../db/sources/open-banking";
 import { onError } from "../api/middlewares/common/on-error";
 import { glob } from "glob";
 import path from "path";
@@ -46,15 +47,16 @@ export class Orchestrator {
     }
 
     private registerDataSource(): void {
-        this.container.register(DataSource.name, DataSource.getInstance());
+        this.container.register(SqlDataSource.name, SqlDataSource.getInstance());
+        this.container.register(OpenBankingDataSource.name, new OpenBankingDataSource());
     }
 
     private async registerRepositories(): Promise<void> {
         try {
             const search =
                 process.env.NODE_ENV === "production"
-                    ? "dist/src/api/modules/**/repository.js"
-                    : "src/api/modules/**/repository.ts";
+                    ? "dist/src/api/modules/**/*repository.js"
+                    : "src/api/modules/**/*repository.ts";
             const repositoryPaths: string[] = await glob(search, {
                 ignore: "node_modules/**",
                 absolute: true,
@@ -88,8 +90,8 @@ export class Orchestrator {
         try {
             const search =
                 process.env.NODE_ENV === "production"
-                    ? "dist/src/api/modules/**/service.js"
-                    : "src/api/modules/**/service.ts";
+                    ? "dist/src/api/modules/**/*service.js"
+                    : "src/api/modules/**/*service.ts";
             const servicePaths: string[] = await glob(search, {
                 ignore: "node_modules/**",
                 absolute: true,
@@ -162,8 +164,8 @@ export class Orchestrator {
         try {
             const search =
                 process.env.NODE_ENV === "production"
-                    ? "dist/src/api/modules/**/router.js"
-                    : "src/api/modules/**/router.ts";
+                    ? "dist/src/api/modules/**/*router.js"
+                    : "src/api/modules/**/*router.ts";
             const routerPaths: string[] = await glob(search, {
                 ignore: "node_modules/**",
                 absolute: true,
