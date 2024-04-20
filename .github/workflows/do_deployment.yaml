@@ -48,7 +48,7 @@ jobs:
               env:
                   SSH_KEY: ${{ secrets.SSH_KEY }}
             - name: Clean the old files from DO's Droplet
-              run: ssh -i ~/.ssh/do_ssh root@159.65.203.225 "rm -rf /opt/app && mkdir /opt/app"
+              run: ssh -i ~/.ssh/do_ssh root@159.65.203.225 "find /opt/app ! -name .env -type f -exec rm -f {} +"
             - name: Copy project files into DO's Droplet
               run: scp -i ~/.ssh/do_ssh -r * root@159.65.203.225:/opt/app
             - name: Start the server in DO
