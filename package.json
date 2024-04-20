@@ -5,13 +5,14 @@
     "main": "/src/server.ts",
     "scripts": {
         "build": "tsc -p tsconfig.prod.json",
-        "start": "tsc -p tsconfig.prod.json && node dist/src/server.js",
+        "start": "node dist/src/server.js",
         "start:dev": "nodemon --exec ts-node -P tsconfig.dev.json src/server.ts",
         "lint": "eslint . --ext ts",
         "lint:fix": "eslint . --ext ts --fix",
         "test": "echo \"Error: no test specified\" && exit 1",
         "user:elevate": "ts-node scripts/elevate-user.ts",
-        "dockerize": "scripts/dockerize.sh"
+        "docker:run": "scripts/dockerize.sh",
+        "compose:up": "npx knex migrate:latest --knexfile ./dist/knexfile.js && node dist/src/server.js"
     },
     "author": "",
     "license": "ISC",
@@ -51,5 +52,8 @@
         "prettier": "^3.2.5",
         "ts-node": "^10.9.2",
         "typescript": "^5.3.3"
+    },
+    "resolutions": {
+        "strip-ansi": "^6.0.1"
     }
 }

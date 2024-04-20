@@ -5,5 +5,10 @@ if ! [ -e .env ] || ! [ -s .env ]; then
     exit 2
 fi
 
-docker pull ajnick/open-banking-sandbox
-docker run -d --env-file .env -p 9876:9876 ajnick/open-banking-sandbox:v0.1.0 
+docker pull ajnick/open-banking-sandbox:v0.3.2
+docker run \
+    --env-file .env \
+    -e NODE_ENV=production \
+    -p 9876:9876 \
+    -v $(pwd)/logs:/app/logs \
+    ajnick/open-banking-sandbox:v0.3.0

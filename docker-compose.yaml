@@ -1,0 +1,55 @@
+version: "3"
+services:
+    app:
+        image: ajnick/open-banking-sandbox:amd64
+        container_name: app
+        ports:
+            - "9876:9876"
+        networks:
+            - host
+            - app-bridge
+        volumes:
+            - logs-volume:/app/logs
+        env_file:
+            - .env
+        environment:
+            NODE_ENV: production
+            PORT: 9876
+            DB_CLIENT: ${DB_CLIENT}
+            DB_CONNECTION: ${DOCKER_COMPOSE_CONNECTION}
+            DB_MIGRATIONS_DIRECTORY: ${DB_MIGRATIONS_DIRECTORY}
+            DB_SEEDS_DIRECTORY: ${DB_SEEDS_DIRECTORY}
+            JWT_SECRET: ${JWT_SECRET}
+            GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+            GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+            GOOGLE_CALLBACK_URL: ${GOOGLE_CALLBACK_URL}
+            CRYPTO_PASSWORD: ${CRYPTO_PASSWORD}
+            CRYPTO_SALT: ${CRYPTO_SALT}
+            CRYPTO_ALGORITHM: ${CRYPTO_ALGORITHM}
+        depends_on:
+            - database
+        command: yarn compose:up
+
+    database:
+        image: postgres:latest
+        container_name: db
+        restart: always
+        shm_size: 128mb
+        networks:
+            - app-bridge
+        volumes:
+            - db-volume:/var/lib/postgresql/data
+        env_file:
+            - .env
+        environment:
+            POSTGRES_PASSWORD: ${DOCKER_COMPOSE_PG_PASSWORD}
+            POSTGRES_USER: ${DOCKER_COMPOSE_PG_USER}
+            POSTGRES_DB: ${DOCKER_COMPOSE_PG_NAME}
+
+networks:
+    host:
+    app-bridge:
+
+volumes:
+    logs-volume:
+    db-volume:

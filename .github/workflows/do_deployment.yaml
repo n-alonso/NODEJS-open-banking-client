@@ -1,0 +1,57 @@
+name: deploy_to_DO
+on:
+    pull_request:
+        branches:
+            - main
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - name: Setup Node
+              uses: actions/setup-node@v3
+              with:
+                  node-version: "18"
+                  cache: "yarn"
+            - name: Install Yarn
+              run: npm install -g yarn
+            - name: Setup Project
+              run: yarn install
+            - name: Build Project
+              run: yarn build
+            - name: Lint Project
+              run: yarn lint
+            - name: Upload build artifact
+              uses: actions/upload-artifact@v4
+              with:
+                  name: build-artifact
+                  path: |
+                      dist/
+                      package.json
+
+    deploy:
+        needs: build
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - name: Download build artifact
+              uses: actions/download-artifact@v4
+              with:
+                  name: build-artifact
+                  path: ./
+            - name: Install SSH Key
+              run: |
+                  mkdir -p ~/.ssh
+                  echo "${{ secrets.SSH_KEY }}" > ~/.ssh/do_ssh
+                  ssh-keyscan -H 159.65.203.225 >> ~/.ssh/known_hosts
+                  chmod 600 ~/.ssh/do_ssh
+              env:
+                  SSH_KEY: ${{ secrets.SSH_KEY }}
+            - name: Clean the old files from DO's Droplet
+              run: ssh -i ~/.ssh/do_ssh root@159.65.203.225 "find /opt/app ! -name .env -type f -exec rm -f {} +"
+            - name: Copy project files into DO's Droplet
+              run: scp -i ~/.ssh/do_ssh -r * root@159.65.203.225:/opt/app
+            - name: Start the server in DO
+              run: ssh -i ~/.ssh/do_ssh root@159.65.203.225 "cd /opt/app && docker compose up -d"
+            - name: Verify the app is up
+              run: curl --fail --retry 5 --retry-delay 3 --connect-timeout 2 http://159.65.203.225:9876/health

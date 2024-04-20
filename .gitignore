@@ -1,6 +1,5 @@
 # Common
 node_modules/
-yarn.lock
 
 # Compilations
 dist/
