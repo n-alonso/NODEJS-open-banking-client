@@ -18,7 +18,7 @@ jobs:
             - name: Setup Project
               run: yarn install
             - name: Build Project
-              run: yarn build --verbose
+              run: yarn build
             - name: Lint Project
               run: yarn lint
             - name: Upload build artifact
