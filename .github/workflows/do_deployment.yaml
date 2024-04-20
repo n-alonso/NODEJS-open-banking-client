@@ -25,7 +25,9 @@ jobs:
               uses: actions/upload-artifact@v3
               with:
                   name: build-artifact
-                  path: ./
+                  path: |
+                      dist/
+                      package.json
 
     deploy:
         needs: build
