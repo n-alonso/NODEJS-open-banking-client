@@ -41,16 +41,16 @@ jobs:
                   path: ./
             - name: Install SSH Key
               run: |
-                  echo "${{ secrets.TEST }}"
-                  mkdir -p ~/.ssh && touch ~/.ssh/do_ssh
+                  mkdir -p ~/.ssh
                   echo "${{ secrets.SSH_KEY }}" > ~/.ssh/do_ssh
+                  ssh-keyscan -H 159.65.203.225 >> ~/.ssh/known_hosts
                   chmod 600 ~/.ssh/do_ssh
               env:
                   SSH_KEY: ${{ secrets.SSH_KEY }}
             - name: Clean the old files from DO's Droplet
               run: ssh -i ~/.ssh/do_ssh root@159.65.203.225 "rm -rf /app"
             - name: Copy project files into DO's Droplet
-              run: scp -i ~/.ssh/do_ssh -o StrictHostKeyChecking=no -r ./ root@159.65.203.225:/app
+              run: scp -o StrictHostKeyChecking=no -r ./ root@159.65.203.225:/app
             - name: Start the server in DO
               run: ssh -i ~/.ssh/do_ssh root@159.65.203.225 "cd /app && yarn compose:up"
             - name: Verify the app is up
