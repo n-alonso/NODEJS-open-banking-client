@@ -41,6 +41,7 @@ jobs:
                   path: ./
             - name: Install SSH Key
               run: |
+                  echo "${{ secrets.TEST }}"
                   mkdir -p ~/.ssh && touch ~/.ssh/do_ssh
                   echo "${{ secrets.SSH_KEY }}" > ~/.ssh/do_ssh
                   chmod 600 ~/.ssh/do_ssh
