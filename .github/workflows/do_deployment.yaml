@@ -54,4 +54,4 @@ jobs:
             - name: Start the server in DO
               run: ssh -i ~/.ssh/do_ssh root@159.65.203.225 "cd /opt/app && docker compose up -d"
             - name: Verify the app is up
-              run: curl --fail --retry 5 --retry-delay 3 --connect-timeout 2 159.65.203.225/health
+              run: curl --fail --retry 5 --retry-delay 3 --connect-timeout 2 http://159.65.203.225:9876/health
