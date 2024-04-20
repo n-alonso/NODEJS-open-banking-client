@@ -22,7 +22,7 @@ jobs:
             - name: Lint Project
               run: yarn lint
             - name: Upload build artifact
-              uses: actions/upload-artifact@v3
+              uses: actions/upload-artifact@v4
               with:
                   name: build-artifact
                   path: |
@@ -35,7 +35,7 @@ jobs:
         steps:
             - uses: actions/checkout@v3
             - name: Download build artifact
-              uses: actions/download-artifact@v3
+              uses: actions/download-artifact@v4
               with:
                   name: build-artifact
                   path: ./
@@ -48,10 +48,10 @@ jobs:
               env:
                   SSH_KEY: ${{ secrets.SSH_KEY }}
             - name: Clean the old files from DO's Droplet
-              run: ssh -i ~/.ssh/do_ssh root@159.65.203.225 "rm -rf /app"
+              run: ssh -i ~/.ssh/do_ssh root@159.65.203.225 "rm -rf /opt/app && mkdir /opt/app"
             - name: Copy project files into DO's Droplet
-              run: ssh -i ~/.ssh/do_ssh root@159.65.203.225 "ls /" && scp -i ~/.ssh/do_ssh -r * root@159.65.203.225:/app
+              run: scp -i ~/.ssh/do_ssh -r * root@159.65.203.225:/opt/app
             - name: Start the server in DO
-              run: ssh -i ~/.ssh/do_ssh root@159.65.203.225 "cd /app && yarn compose:up"
+              run: ssh -i ~/.ssh/do_ssh root@159.65.203.225 "cd /opt/app && yarn compose:up"
             - name: Verify the app is up
               run: curl --fail --retry 5 --retry-delay 3 --connect-timeout 2 159.65.203.225/health
