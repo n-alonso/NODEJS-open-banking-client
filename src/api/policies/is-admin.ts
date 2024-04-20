@@ -13,14 +13,10 @@ export default async function (ctx: Context, next: Next): Promise<void> {
     }
 
     try {
-        console.log("ADMIN");
         const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as PayloadWithRole;
-        console.log("ADMIN");
         if (decoded?.role === "admin") await next();
         else ctx.throw(403, "Not Authorised");
-        console.log("ADMIN");
     } catch (err: unknown) {
-        console.log("ADMIN ERR");
         ctx.throw(403, "Not Authorised");
     }
 }
