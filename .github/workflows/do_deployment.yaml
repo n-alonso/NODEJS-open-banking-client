@@ -50,7 +50,7 @@ jobs:
             - name: Clean the old files from DO's Droplet
               run: ssh -i ~/.ssh/do_ssh root@159.65.203.225 "rm -rf /app"
             - name: Copy project files into DO's Droplet
-              run: scp -i ~/.ssh/do_ssh -o StrictHostKeyChecking=no -r ./ root@159.65.203.225:/app
+              run: scp -i ~/.ssh/do_ssh -r * root@159.65.203.225:/app
             - name: Start the server in DO
               run: ssh -i ~/.ssh/do_ssh root@159.65.203.225 "cd /app && yarn compose:up"
             - name: Verify the app is up
