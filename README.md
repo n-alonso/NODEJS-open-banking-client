@@ -4,11 +4,11 @@ My intention is build a server using an Object-Oriented Programming (OOP) approa
 
 ## TL;DR
 I wanted to practice building my own Core Module which includes an Inversion of Control (IoC) container with register/resolve pattern and an Application class with register/bootstrap pattern to handle application lyfecycle.
-The application register uses the `glob` package to scan the filesystem for components and middlewares to loads them automatically.
-I used a Route > Service > Repository architechture, which in turn connects to dynamic DataSources to allow for future changes (Knex with Postgres initially).
+The application register uses the `glob` package to scan the filesystem for components and middlewares to dynamically load them.
+I use a Route > Service > Repository architechture for modules, which in turn connects to dynamic DataSources to allow for future changes (Knex with Postgres initially).
 This architecture should allow anyone to add new middlewares and new modules with ease with minimal to no configuration to the applciation itself.
 
-Also wanted to make a project that showcases my knowledge and skills, so some of the features are 'forced' into the project and might not make sense in a practical scenario, yet they were added for the mere purpose of proving my ability to do them.
+**Disclaimer:** Wanted to make a project that showcases my knowledge and skills, so some of the features are *forced* into the project and might not make sense in a practical scenario, yet they were added for the mere purpose of proving my ability to do them.
 
 ## Table of Contents
 - [Tech-Stack](#this-project-utilizes-the-following-tech-stack)
@@ -58,7 +58,17 @@ I've tried to add most of the common security features that you would typically 
 
 ## Infraestructure:
 - Docker: Dockerfile and .dockerignore files are available in this repository
-  - You can check the [published Docker Image](https://hub.docker.com/repository/docker/ajnick/open-banking-sandbox) for this project
+  - You can check the [published Docker Images](https://hub.docker.com/repository/docker/ajnick/open-banking-sandbox) for this project.
+- Cloud: This project is hosted in a Digital Ocean Droplet.
+- Server: NGINX instance is used as a proxy to direct the traffic to the project.
+
+## CI/CD:
+- GitHub Actions: On Pull Requests to `main` it will build and deploy the application:
+  - Build: Sets up the environment and then lints, builds and uploads the build as an artifact.
+  - Deploy: Downloads the build artifact, installs the ssh key, cleans the existing project version in Digital Ocean, deploys the new version and verifies that the server is up and running.
+- Gitlab CI: I created a different pipeline in Gitlab for experimentation purposes:
+  - Build: Builds the Docker image and stores it in Gitlab's registry.
+  - Verify: Pulls the image from the registry, starts it and verifies that it works as intended.
 
 ## I strived to adhere to SOLID principles:
 - **Single Responsibility**: The project's structure exemplifies this, with each file dedicated to a single responsibility (routes, services, repositories, etc).
