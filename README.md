@@ -15,7 +15,9 @@ This architecture should allow anyone to add new middlewares and new modules wit
 - For Recruiters
     - [Security](#security)
   - DevOps
-    - [Infraestructure](#infraestructure)
+    - [Infrastructure](#infrastructure)
+    - [Server](#server)
+    - [CI/CD](#cicd)
   - Backend
     - [SOLID Principles](#i-strived-to-adhere-to-solid-principles)
     - [Coding Patterns Utilised](#coding-patterns-utilised)
@@ -34,8 +36,9 @@ This architecture should allow anyone to add new middlewares and new modules wit
   - Postgres (Knex)
 - Infrastructure:
   - Docker
-  - TBD | Digital Ocean
-  - TBD | Github Actions
+  - Digital Ocean
+  - Github Actions
+  - NGINX
 - TBD | Testing:
   - TBD | Jest
 - TBD | Documentation:
@@ -50,17 +53,19 @@ This architecture should allow anyone to add new middlewares and new modules wit
 I've tried to add most of the common security features that you would typically add to a production-ready application:
 - Middlewares - Helmet, Cors and RateLimit are initialised with (example) defaults (except Helmet).
 - Passport.js - Google OAuth20 to login with Gmail.
-- Jwt - Set a jwt cookie once logged in.
+- JWT - Set a jwt cookie once logged in.
 - RBAC - Users have roles ('user' & 'admin') that are guarded with policies.
 - Policies - Implemented per route/endpoint (Ie. isAuthenticated, isAdmin, isSelf).
 - Encryption at rest - Node Crypto is used to encrypt/decrypt all user details.
 - TBD | Encryption in transit - Digital Ocean provides SSL certificates for the api to be served via HTTPS protocol.
 
-## Infraestructure:
-- Docker: Dockerfile and .dockerignore files are available in this repository
+## Infrastructure:
+- Containers: Dockerfile and Docker Compose files are available in this repository
   - You can check the [published Docker Images](https://hub.docker.com/repository/docker/ajnick/open-banking-sandbox) for this project.
-- Cloud: This project is hosted in a Digital Ocean Droplet.
-- Server: NGINX instance is used as a proxy to direct the traffic to the project.
+- Cloud: This project is hosted in a Digital Ocean Droplet VM.
+
+## Server: 
+NGINX instance is used as a proxy to direct the traffic to the project.
 
 ## CI/CD:
 - GitHub Actions: On Pull Requests to `main` it will build and deploy the application:
