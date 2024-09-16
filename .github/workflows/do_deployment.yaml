@@ -17,10 +17,10 @@ jobs:
               run: npm install -g yarn
             - name: Setup Project
               run: yarn install
-            - name: Build Project
-              run: yarn build
             - name: Lint Project
               run: yarn lint
+            - name: Build Project
+              run: yarn build
             - name: Upload build artifact
               uses: actions/upload-artifact@v4
               with:
@@ -48,7 +48,7 @@ jobs:
               env:
                   SSH_KEY: ${{ secrets.SSH_KEY }}
             - name: Clean the old files from DO's Droplet
-              run: ssh -i ~/.ssh/do_ssh root@159.65.203.225 "find /opt/app ! -name .env -type f -exec rm -f {} +"
+              run: ssh -i ~/.ssh/do_ssh root@159.65.203.225 "docker compose down && find /opt/app ! -name .env -type f -exec rm -f {} +"
             - name: Copy project files into DO's Droplet
               run: scp -i ~/.ssh/do_ssh -r * root@159.65.203.225:/opt/app
             - name: Start the server in DO
