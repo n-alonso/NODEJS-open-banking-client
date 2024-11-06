@@ -1,28 +1,22 @@
 # Open Banking Client (WORK IN PROGRESS)
-The goal of this project is to build a payment service using Open Banking APIs.  
-My intention is build a server using an Object-Oriented Programming (OOP) approach, adhering to clean code best practices and making it as 'production-ready' as I can.  
+The goal of this project is to build a payment service using Open Banking APIs (True Layer).  
+My intention is build a server making it as 'production-ready' as I can and trying to build the core components on my own isntead of using existing solutions.  
 
 ## TL;DR
 I wanted to practice building my own Core Module which includes an Inversion of Control (IoC) container with register/resolve pattern and an Application class with register/bootstrap pattern to handle application lyfecycle.
 The application register uses the `glob` package to scan the filesystem for components and middlewares to dynamically load them.
-I use a Route > Service > Repository architechture for modules, which in turn connects to dynamic DataSources to allow for future changes (Knex with Postgres initially).
+I use a Route > Service > Repository architechture for modules, which in turn connects to dynamic DataSources to allow for future changes (Knex.js).
 This architecture should allow anyone to add new middlewares and new modules with ease with minimal to no configuration to the applciation itself.
 
-**Disclaimer:** Wanted to make a project that showcases my knowledge and skills, so some of the features are *forced* into the project and might not make sense in a practical scenario, yet they were added for the mere purpose of proving my ability to do them.
+**Disclaimer:** Wanted to make a project that showcases my knowledge and skills, so some of the features are *forced* into the project and might not make sense in a practical scenario, yet they were added for the mere purpose of practicing them.
 
 ## Table of Contents
 - [Tech-Stack](#this-project-utilizes-the-following-tech-stack)
-- For Recruiters
-    - [Security](#security)
-  - DevOps
+- [Security](#security)
+- DevOps
     - [Infrastructure](#infrastructure)
     - [Server](#server)
     - [CI/CD](#cicd)
-  - Backend
-    - [SOLID Principles](#i-strived-to-adhere-to-solid-principles)
-    - [Coding Patterns Utilised](#coding-patterns-utilised)
-    - [Data Structures](#data-structures)
-    - [Algorithms](#algorithms)
 - [Installation](#installation)
 - [Usage](#usage)
 
@@ -32,8 +26,7 @@ This architecture should allow anyone to add new middlewares and new modules wit
 - Implementation:
   - Koa.js
   - TypeScript
-- Data Sources:
-  - Postgres (Knex)
+  - Knex.js
 - Infrastructure:
   - Docker
   - Digital Ocean
@@ -52,16 +45,15 @@ This architecture should allow anyone to add new middlewares and new modules wit
 ## Security:
 I've tried to add most of the common security features that you would typically add to a production-ready application:
 - Middlewares - Helmet, Cors and RateLimit are initialised with (example) defaults (except Helmet).
-- Passport.js - Google OAuth20 to login with Gmail.
-- JWT - Set a jwt cookie once logged in.
-- RBAC - Users have roles ('user' & 'admin') that are guarded with policies.
+- Passport.js - Google OAuth20.
+- JWT - Sets a jwt cookie once logged in.
+- RBAC - Roles ('user' & 'admin') are guarded with policies.
 - Policies - Implemented per route/endpoint (Ie. isAuthenticated, isAdmin, isSelf).
 - Encryption at rest - Node Crypto is used to encrypt/decrypt all user details.
-- TBD | Encryption in transit - Digital Ocean provides SSL certificates for the api to be served via HTTPS protocol.
+- Encryption in transit - Digital Ocean provides SSL certificates by default.
 
 ## Infrastructure:
-- Containers: Dockerfile and Docker Compose files are available in this repository
-  - You can check the [published Docker Images](https://hub.docker.com/repository/docker/ajnick/open-banking-sandbox) for this project.
+- Containers: Dockerfile and Docker Compose files are available in this repository and published to Docker Hub.
 - Cloud: This project is hosted in a Digital Ocean Droplet VM.
 
 ## Server: 
@@ -74,33 +66,6 @@ NGINX instance is used as a proxy to direct the traffic to the project.
 - Gitlab CI: I created a different pipeline in Gitlab for experimentation purposes:
   - Build: Builds the Docker image and stores it in Gitlab's registry.
   - Verify: Pulls the image from the registry, starts it and verifies that it works as intended.
-
-## I strived to adhere to SOLID principles:
-- **Single Responsibility**: The project's structure exemplifies this, with each file dedicated to a single responsibility (routes, services, repositories, etc).
-- **Open/Closed**: Not explicitly mentioned but implied through modular design that allows for extension without modification.
-- **Liskov Substitution**: Observed through generic classes like `CrudRepository` or `DataSource`.
-- **Interface Segregation**: Demonstrated with interfaces like `UserEntity` and `UserDto` and how other interfaces or classes that are used as types are configured.
-- **Dependency Inversion**: Achieved through the strategic design of building an IoC Container and modularizing the project's architecture.
-
-## Coding Patterns utilised:
-- **Singleton**: To instantiate the IoC Container and Application class, amongst others.
-- **Proxy**: While not a traditional use of the Proxy pattern, the encapsulation of each route in a RouterClass implements some proxy-like behaviour (lazy instantiation, controlling and managing access, etc).
-- **Chain of Responsibility**: The request passes through a chain of middlewares until it is fully processed or rejected.
-- **TBD | Strategy**: To choose between different Databases, to choose from different sorting algorithms, or to choose different authentication methods.
-- **TBD | Iterator**: For the Binary Trees and Priority Queues I plan to implement.
-- **TBD | Template Method**: For the register method in the Application class, or to validate data.
-
-## Data Structures:
-- **Map**: Used to keep track of dependencies in the IoCContainer.
-- **Enum**: To implement roles for RBAC.
-- **TBD | HashMap**: Will be used for caching.
-- **TBD | Binary Trees**: A binary tree will be used to manage authentication and sessions (insertion/lookup).
-- **TBD | Priority Queue with Binary Heap implementation**: A priority queue will be used for task scheduling (Ie. Password-reset emails should have higher priority than promotional ones).
-
-## Algorithms:
-- **Encryption**: Node's Crypto module is used for all user sensitive information.
-- **TBD | Sorting**: So the API can return sorted results.
-- **TBD | Binary Search**: In conjuction with the Binary Tree for session management.
 
 ## Installation
 This project presumes you have Node with v18 and Yarn installed and available.
